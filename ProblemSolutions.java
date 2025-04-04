@@ -1,7 +1,7 @@
 
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Joshua Kao / SECTION NUMBER: 272/400 001
  *
  *   This java file contains the problem solutions for the methods lastBoulder,
  *   showDuplicates, and pair methods. You should utilize the Java Collection
@@ -64,12 +64,25 @@ public class ProblemSolutions {
      */
 
   public static int lastBoulder(int[] boulders) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
 
-      //
-      // ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME / SECTION # ABOVE
-      //
-      return -1;
-  }
+        // Add all boulders to the max heap
+        for (int b : boulders) {
+            pq.add(b);
+        }
+
+        // Smash boulders until only one remains
+        while (pq.size() > 1) {
+            int x = pq.poll(); // Heaviest
+            int y = pq.poll(); // Second heaviest
+
+            if (x != y) {
+                pq.add(x - y); // Insert the new weight
+            }
+        }
+
+        return pq.isEmpty() ? 0 : pq.peek(); // Return last boulder weight (or 0)
+    }
 
 
     /**
@@ -90,12 +103,25 @@ public class ProblemSolutions {
      */
 
     public static ArrayList<String> showDuplicates(ArrayList<String> input) {
+        Map<String, Integer> countMap = new HashMap<>();
+        ArrayList<String> duplicates = new ArrayList<>();
 
-        //
-        //  YOUR CODE GOES HERE
-        //
-        return new ArrayList<>();  // Make sure result is sorted in ascending order
+        // Count occurrences
+        for (String str : input) {
+            countMap.put(str, countMap.getOrDefault(str, 0) + 1);
+        }
 
+        // Collect duplicates
+        for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
+            if (entry.getValue() > 1) {
+                duplicates.add(entry.getKey());
+            }
+        }
+
+        // Sort alphabetically
+        Collections.sort(duplicates);
+
+        return duplicates;
     }
 
 
@@ -130,10 +156,23 @@ public class ProblemSolutions {
      */
 
     public static ArrayList<String> pair(int[] input, int k) {
+        Set<Integer> seen = new HashSet<>();
+        Set<String> pairSet = new HashSet<>();
+        ArrayList<String> result = new ArrayList<>();
 
-        //
-        //  YOUR CODE GOES HERE
-        //
-        return new ArrayList<>();  // Make sure returned lists is sorted as indicated above
+        for (int num : input) {
+            int complement = k - num;
+            if (seen.contains(complement)) {
+                int a = Math.min(num, complement);
+                int b = Math.max(num, complement);
+                pairSet.add("(" + a + ", " + b + ")");
+            }
+            seen.add(num);
+        }
+
+        result.addAll(pairSet);
+        Collections.sort(result); // Lexicographic sort works because "(a, b)" will naturally sort correctly
+
+        return result;
     }
 }
